@@ -35,5 +35,5 @@ jobs:
           # Changed "test/" to "tests/" to match the new structure
           python -m pytest tests/ -v --tb=short
         env:
-          DATABASE_URL: sqlite:///:memory:
+          DATABASE_URL: sqlite:///:memory
           PYTHONPATH: .
