@@ -1,13 +1,39 @@
-- name: Install dependencies
+name: SmartTask CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # Fixes the Node.js deprecation warning until June 2026
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Combining these ensures all requirements are met at once
-          pip install -r requirements.txt pytest pytest-cov flask-sqlalchemy
+          pip install -r requirements.txt
+          # These are already in your requirements.txt, but keeping them 
+          # here ensures they are present even if the file is missing them.
+          pip install pytest pytest-cov flask-sqlalchemy
 
       - name: Run tests
-        # Added --tb=short to give you a cleaner error summary if it fails again
         run: |
-          python -m pytest test/ -v --tb=short
+          # Changed "test/" to "tests/" to match the new structure
+          python -m pytest tests/ -v --tb=short
         env:
           DATABASE_URL: sqlite:///:memory:
           PYTHONPATH: .
